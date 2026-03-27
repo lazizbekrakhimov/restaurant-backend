@@ -19,7 +19,7 @@ export class AuthController {
   }
 
   @Post('login')
-  @ApiOperation({ summary: 'Login — superadmin: superadmin@restaurant.com / Super123!' })
+  @ApiOperation({ summary: 'Login — Superadmin: superadmin@email.com / Super123!' })
   async login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: Response) {
     const result = await this.authService.login(dto);
     res.cookie('token', result.token, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 });

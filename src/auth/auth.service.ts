@@ -11,7 +11,7 @@ export class AuthService {
   constructor(
     @InjectRepository(User) private userRepo: Repository<User>,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
   async register(dto: RegisterDto) {
     const exists = await this.userRepo.findOne({ where: { email: dto.email } });
@@ -30,14 +30,14 @@ export class AuthService {
   }
 
   async seedSuperAdmin() {
-    const exists = await this.userRepo.findOne({ where: { email: 'superadmin@restaurant.com' } });
+    const exists = await this.userRepo.findOne({ where: { email: 'superadmin@email.com' } });
     if (!exists) {
       const hashed = await bcrypt.hash('Super123!', 10);
       await this.userRepo.save(this.userRepo.create({
-        name: 'superadmin', email: 'superadmin@restaurant.com',
-        password: hashed, role: UserRole.ADMIN,
+        name: 'Superadmin', email: 'superadmin@email.com',
+        password: hashed, role: UserRole.SUPERADMIN,
       }));
-      console.log('SuperAdmin created successfully: superadmin@restaurant.com / Super123!');
+      console.log('SuperAdmin created successfully: superadmin@email.com / Super123!');
     }
   }
 

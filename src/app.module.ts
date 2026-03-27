@@ -8,6 +8,8 @@ import { CategoriesModule } from './categories/categories.module';
 import { NewsModule } from './news/news.module';
 import { ReservationsModule } from './reservations/reservations.module';
 import { ContactsModule } from './contacts/contacts.module';
+import { GalleryModule } from './gallery/gallery.module';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
@@ -30,7 +32,8 @@ import { ContactsModule } from './contacts/contacts.module';
     NewsModule,
     ReservationsModule,
     ContactsModule,
+    GalleryModule,
+    UploadModule,
   ],
 })
-
 export class AppModule {}

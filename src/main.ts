@@ -5,6 +5,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 import { join } from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import * as fs from 'fs';
 
 async function main() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -12,9 +13,21 @@ async function main() {
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 
-  app.useStaticAssets(join(process.cwd(), 'uploads'), { prefix: '/uploads', });
+  const uploadDirs = ['uploads/products', 'uploads/news', 'uploads/galleries', 'uploads/avatars', 'uploads/temp'];
+  uploadDirs.forEach(dir => {
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  });
 
-  app.enableCors({ origin: 'http://localhost:3000', credentials: true, });
+  app.useStaticAssets(join(process.cwd(), 'uploads'), { prefix: '/uploads' });
+
+  app.enableCors({
+    origin: [
+      'http://localhost:3000',
+      'http://localhost:3001',
+      process.env.FRONTEND_URL || '',
+    ].filter(Boolean),
+    credentials: true,
+  });
 
   const config = new DocumentBuilder()
     .setTitle('Restaurant API')
@@ -24,10 +37,11 @@ async function main() {
 
   SwaggerModule.setup('api', app, SwaggerModule.createDocument(app, config));
 
-  await app.listen(process.env.PORT || 4004);
+  const port = process.env.PORT || 4004;
+  await app.listen(port);
 
-  console.log(`Server running on port 4004: http://localhost:${process.env.PORT || 4004}`);
-  console.log(`Swagger: http://localhost:${process.env.PORT || 4004}/api`);
+  console.log(`Server: http://localhost:${port}`);
+  console.log(`Swagger: http://localhost:${port}/api`);
 }
 
 main();

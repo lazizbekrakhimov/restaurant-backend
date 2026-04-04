@@ -8,13 +8,17 @@ import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   @Post('register')
   @ApiOperation({ summary: 'Register new user' })
   async register(@Body() dto: RegisterDto, @Res({ passthrough: true }) res: Response) {
     const result = await this.authService.register(dto);
-    res.cookie('token', result.token, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 });
+    res.cookie('token', result.token, {
+      httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000,
+      sameSite: 'none',
+      secure: true,
+    });
     return result;
   }
 
@@ -22,7 +26,11 @@ export class AuthController {
   @ApiOperation({ summary: 'Login — Superadmin: superadmin@email.com / Super123!' })
   async login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: Response) {
     const result = await this.authService.login(dto);
-    res.cookie('token', result.token, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 });
+    res.cookie('token', result.token, {
+      httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000,
+      sameSite: 'none',
+      secure: true,
+    });
     return result;
   }
 
